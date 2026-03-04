@@ -96,6 +96,4 @@ ssh -A ec2-user@<bastion-public-ip>
 
 # From Bastion to App Server
 ssh ec2-user@<app-server-private-ip>
-<!--
-**jmartinez-boot/jmartinez-boot** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
 
