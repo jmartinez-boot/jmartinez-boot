@@ -64,10 +64,24 @@ This project demonstrates a **highly available, secure, and scalable** three-tie
 *Include screenshots from the PDF here:*
 
 - VPC and subnet layout
+- <img width="615" height="325" alt="image" src="https://github.com/user-attachments/assets/4b9337a9-5f3b-41a1-8305-14769aa39e69" />
+- <img width="633" height="250" alt="image" src="https://github.com/user-attachments/assets/ebc4840c-2059-408d-9374-a8c5b9060c5c" />
+
+
 - Route tables and NAT gateways
+- <img width="628" height="669" alt="image" src="https://github.com/user-attachments/assets/48b6f171-4d91-4472-a0fb-2c8fb83a2023" />
+- <img width="633" height="231" alt="image" src="https://github.com/user-attachments/assets/99bf7aec-f358-4512-b2a8-9e214d0faaae" />
+
+
 - Network ACL rules
+- <img width="624" height="196" alt="image" src="https://github.com/user-attachments/assets/06254b3a-c46c-4898-a2d2-eb72b87a9a5a" />
+
 - Security group rules
+- <img width="643" height="338" alt="image" src="https://github.com/user-attachments/assets/425c8945-8c90-4601-a93c-98eb303c8809" />
+
 - Bastion host connection flow
+- <img width="617" height="794" alt="image" src="https://github.com/user-attachments/assets/721a3986-fa28-4a68-8c53-734437f14478" />
+
 
 ---
 
