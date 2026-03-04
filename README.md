@@ -1,4 +1,17 @@
-## Hi there 👋
+## PRODUCTION-GRADE
+
+NETWORK ARCHITECTURE IN
+
+AWS HOSTING A STANDARD
+
+THREE-TIER WEB
+
+APPLICATION.
+
+CLOUD ENGINEERING BELIZE
+
+GDS  👋
+
 Network Configuration and Implementation
 1. VPC and Subnet Structure
 A single VPC is created to house all resources. It is configured to span two Availability Zones for
