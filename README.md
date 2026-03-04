@@ -1,86 +1,87 @@
-## PRODUCTION-GRADE
+# 🏗️ Production-Grade AWS 3-Tier Web Application Architecture
 
-NETWORK ARCHITECTURE IN
+This project demonstrates a **highly available, secure, and scalable** three-tier web application architecture deployed on AWS. It follows industry best practices for network isolation, security, and administrative access.
 
-AWS HOSTING A STANDARD
+---
 
-THREE-TIER WEB
+## 🧱 Architecture Overview
 
-APPLICATION.
+- **VPC** spanning 2 Availability Zones
+- **Public, Private (App), and Private (Data)** subnets in each AZ
+- **Internet Gateway** for public internet access
+- **NAT Gateways** per AZ for outbound internet from private instances
+- **Network ACLs** and **Security Groups** for defense-in-depth security
+- **Bastion Host** for secure administrative access to private instances
+- **Load Balancer** in public subnets to route traffic to app servers
+- **Application Servers** in private app subnets
+- **Database Servers** in private data subnets
 
-CLOUD ENGINEERING BELIZE
+---
 
-GDS  👋
+## 🧩 Components & Configuration
 
-**Network Configuration and Implementation**
+### 1. VPC and Subnet Design
 
-_1. VPC and Subnet Structure_
+| Tier  | Subnet Type | Availability Zones | Purpose |
+|-------|-------------|---------------------|---------|
+| Web   | Public      | AZ1 & AZ2           | Load balancers, Bastion Host |
+| App   | Private     | AZ1 & AZ2           | Application servers |
+| Data  | Private     | AZ1 & AZ2           | Databases |
 
-A single VPC is created to house all resources. It is configured to span two Availability Zones for
-high availability.
+### 2. Routing & Internet Access
 
-Tier               Subnet Type            Availability Zones          Purpose
+- **Internet Gateway** enables inbound/outbound internet for public subnets.
+- **NAT Gateways** (one per AZ) allow private instances to access the internet for updates while remaining inaccessible from the internet.
 
-Public             Public                 AZ 1 & AZ 2                 Internet-facing Load Balancers and Bastion Hosts.
+### 3. Security
 
-App                 Private               AZ 1 & AZ 2                 Application Servers; outbound internet access via                                                                       NAT Gateway.
+#### Network ACLs (Subnet-level firewall)
 
-Data                Private               AZ 1 & AZ 2                 Databases; no direct internet access (inbound or                                                                        outbound).
+| Tier   | Inbound Rules                          | Outbound Rules                     |
+|--------|----------------------------------------|-------------------------------------|
+| Public | Allow 80/443/22 from 0.0.0.0/0         | Allow ephemeral ports return traffic |
+| App    | Allow from Public subnet (80/443)      | Allow to Public & Data subnets      |
+| Data   | Allow from App subnet (DB port e.g., 3306) | Allow return to App subnet       |
 
-_2. Connectivity and Routing_
+#### Security Groups (Instance-level firewall)
 
-• Internet Gateway (IGW): Attached to the VPC to allow communication between
-resources in the public subnets and the internet.
+| Security Group     | Inbound Rules                          | Source                          |
+|--------------------|----------------------------------------|----------------------------------|
+| Public ELB SG      | HTTP (80), HTTPS (443)                 | 0.0.0.0/0                       |
+| Bastion Host SG    | SSH (22)                                | Trusted admin IP range          |
+| App Server SG      | HTTP (80), HTTPS (443)                  | ELB Security Group              |
+| DB Server SG       | MySQL (3306) / Custom DB port           | App Server Security Group       |
 
-• NAT Gateways: One NAT Gateway is deployed into each public subnet. Private subnets
-are configured to route all outbound internet-bound traffic (0.0.0.0/0) through their
-respective AZ's NAT Gateway. This provides outbound internet access for tasks like
-software updates without exposing the instances to inbound requests.
+### 4. Secure Administrative Access
 
-_3. Security Implementation_
+- Bastion Host in public subnet allows SSH only from authorized IPs.
+- From Bastion, admins connect to private app servers via internal network.
 
-Security is enforced using a defense-in-depth approach with both Security Groups (stateful) and
-Network ACLs (stateless).
+---
 
-_Network ACLs (NACLs)_
+## 🖼️ Architecture Diagrams
 
-NACLs act as firewalls at the subnet level. The rules below represent the core security posture.
+*Include screenshots from the PDF here:*
 
-Tier              Inbound Rules                                                 Outbound Rules
+- VPC and subnet layout
+- Route tables and NAT gateways
+- Network ACL rules
+- Security group rules
+- Bastion host connection flow
 
-Public            Allow all traffic from internet (0.0.0.0/0) to                Allow all return traffic (ephemeral ports).
-                  allowed ports (80/443/22).
+---
 
-App (Private)    Allow traffic from Public Subnet SG (port 443/80).             Allow return traffic to Public SG, and to Data                                                                               SG (DB port).
+## 🧪 Results & Validation
 
-Data (Private)   Allow traffic only from App Subnet SG (DB port e.g., 3306 ).   Allow return traffic to App SG.
+- Successfully SSH’d into Bastion Host from local machine.
+- From Bastion, connected to private App Server via internal IP.
 
-_Security Groups (SGs)_
+```bash
+# From local machine
+ssh -A ec2-user@<bastion-public-ip>
 
-Security Groups act as firewalls at the instance level, allowing granular control based on specific
-resource roles.
-
-Security Group                Inbound Rules (Source)                    Description
-  
-Public ELB SG                 Port 80, 443                              Fronts the application, accepts traffic from users.  
-                              (Internet 0.0.0.0/0)
-
-Bastion Host SG               Port 22 (Admin IP range)                  Allows SSH access only from a trusted IP range for
-                                                                        administration.
-
-App Server SG                 Port 80/443 (ELB SG)                      Accepts traffic only from the load balancer SG.
-
-DB Server SG                  DB Port (App Server SG)                   Accepts traffic only from the application server SG.
-
-_4. Secure Administrative Access_
-
-A "Bastion Host" (or jump box) EC2 instance is placed in a public subnet. Administrators connect
-via SSH to the Bastion host using strong credentials (SSH keys), and then from the bastion,
-connect internally to application servers in the private subnets. Access to the bastion is tightly
-restricted via its security group to specific source IP addresses.
-This architecture provides a robust, secure, and scalable foundation for the three-tier web
-application.
-
+# From Bastion to App Server
+ssh ec2-user@<app-server-private-ip>
 <!--
 **jmartinez-boot/jmartinez-boot** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
 
